@@ -1,7 +1,7 @@
 import json
 import os
-
 import re
+
 import requests
 from moviepy import VideoFileClip, AudioFileClip
 
@@ -22,8 +22,10 @@ class P:
         参数:
         url -- 视频页面的URL
         """
+        self.ar = None
+        self.vr = None
         information = self.geturl(url)
-        print(information)
+        # pprint(information)
         self.videoURL = information['vurl']
         self.audioURL = information['aurl']
         self.header = information['header']
@@ -39,6 +41,19 @@ class P:
         返回:
         包含视频链接(vurl)、音频链接(aurl)、请求头(header)和视频名称(name)的字典
         """
+        def getHDUrl(links):
+            max_link = None
+            max_number = -1
+            for link in links:
+                # 使用正则表达式提取链接中的数字
+                match = re.search(r"-(\d+)\.m4s[^\"']*", link)
+                if match:
+                    number = int(match.group(1))  # 提取数字部分并转换为整数
+                    if number > max_number:
+                        max_number = number
+                        max_link = link
+            return max_link
+
         h = url.split('&')[0]
         header = {
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36',
@@ -53,18 +68,37 @@ class P:
             name = re.findall('title="(.*?)"', html_content)[0]
             info = re.findall('window.__playinfo__=(.*?)</script>', html_content)[0]
             jinfo = json.loads(info)
-            audio_bandwidth = 0
-            audio_matches = ''
-            for audio in jinfo['data']['dash']['audio']:
-                if audio['bandwidth'] > audio_bandwidth:
-                    audio_bandwidth = audio['bandwidth']
-                    audio_matches = audio['baseUrl']
-            video_bandwidth = 0
-            video_matches = ''
-            for video in jinfo['data']['dash']['video']:
-                if video['bandwidth'] > video_bandwidth:
-                    video_bandwidth = video['bandwidth']
-                    video_matches = video['baseUrl']
+            video_links = [link['baseUrl'] for link in jinfo['data']['dash']['video']]
+            audio_links = [link['baseUrl'] for link in jinfo['data']['dash']['audio']]
+            video_matches = getHDUrl(video_links)
+            audio_matches = getHDUrl(audio_links)
+
+            # pprint(jinfo)
+            # pprint(jinfo['data']['dash'])
+            # audio_bandwidth = 0
+            # audio_matches = ''
+            # for audio in jinfo['data']['dash']['audio']:
+            #     # print(audio['bandwidth'])
+            #     if audio['bandwidth'] > audio_bandwidth:
+            #         audio_bandwidth = audio['bandwidth']
+            #         audio_matches = audio['baseUrl']
+            #     # print(audio_matches,'\n',audio_bandwidth)
+            # video_bandwidth = 0
+            # video_matches = ''
+            # for video in jinfo['data']['dash']['video']:
+            #     # print(video['bandwidth'])
+            #     if video['bandwidth'] > video_bandwidth:
+            #         video_bandwidth = video['bandwidth']
+            #         video_matches = video['baseUrl']
+                # print(video_matches,'\n',video_bandwidth)
+            # result = {
+            #     'aurl': audio_matches if audio_matches else None,
+            #     'vurl': video_matches if video_matches else None,
+            #     'header': header,
+            #     'name': name
+            # }
+            # return result
+
             result = {
                 'aurl': audio_matches if audio_matches else None,
                 'vurl': video_matches if video_matches else None,
@@ -153,3 +187,4 @@ if __name__ == '__main__':
     url = input('请输入网址:\n')
     p = P(url)
     p.py()
+
