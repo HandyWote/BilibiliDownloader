@@ -101,8 +101,10 @@ class P:
         视频保存为video.mp4，音频保存为audio.mp3
         """
         try:
-            open('video.mp4','wb').write(self.vr.content)
-            open('audio.mp3', 'wb').write(self.ar.content)
+            with open('video.mp4','wb') as v:
+                v.write(self.vr.content)
+            with open('audio.mp3', 'wb')as a:
+                a.write(self.ar.content)
         except Exception:
             print('写入媒体失败')
 
