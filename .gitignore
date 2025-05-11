@@ -5,6 +5,7 @@ __pycache__/
 
 # Virtual environment
 .venv/
+pyvenv
 
 # IDE
 .idea/
@@ -21,4 +22,5 @@ Thumbs.db
 
 1
 
+*.exe
 ui_prototype.html

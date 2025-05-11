@@ -1,7 +1,10 @@
 import json
 import os
+
+import re
+import requests
 from moviepy import VideoFileClip, AudioFileClip
-import requests, re
+
 
 class P:
     """

@@ -1,9 +1,13 @@
-from PyQt5.QtCore import Qt, QPropertyAnimation, QEasingCurve, QTimer
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QProgressBar, QMainWindow
-from PyQt5.QtGui import QColor, QFont, QPainterPath, QPainter, QBrush
-from PyQt5.QtWidgets import QGraphicsDropShadowEffect, QGraphicsOpacityEffect
 import sys
+
+from PyQt5.QtCore import Qt, QPropertyAnimation, QEasingCurve, QTimer
+from PyQt5.QtGui import QColor, QFont, QPainterPath, QPainter, QBrush
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QProgressBar, \
+    QMainWindow
+from PyQt5.QtWidgets import QGraphicsDropShadowEffect, QGraphicsOpacityEffect
+
 from BP import P
+
 
 class RoundedWidget(QWidget):
     def __init__(self, parent=None):
